@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Store.Models
 {
-    public static class Storage
+    public class Storage
     {
-        public static List<(Product product, int count)> Products { get; set; } = new List<(Product product, int count)>();
+        [Key]
+        public int ProductId { get; set; }
+        public int Count { get; set; }
+
+        public Product Product { get; set; }
     }
 }
