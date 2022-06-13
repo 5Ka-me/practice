@@ -13,18 +13,18 @@ namespace Store.Models
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<Receipt> Receipts { get; set; }
+        //public DbSet<Receipt> Receipts { get; set; }
 
-        public DbSet<Storage> Storage { get; set; }
+        //public DbSet<Storage> Storage { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasData(
-                    new User { UserId = 1, UserName = "Tom"},
-                    new User { UserId = 2, UserName = "Bob"},
-                    new User { UserId = 3, UserName = "Sam"}
+            modelBuilder.Entity<Product>().HasData(
+                    new Product { ProductId = 1, ProductName = "Product1", Description = "ProductDiscription1"},
+                    new Product { ProductId = 2, ProductName = "Product2", Description = "ProductDiscription2"},
+                    new Product { ProductId = 3, ProductName = "Product3", Description = "ProductDiscription3"}
             );
         }
     }

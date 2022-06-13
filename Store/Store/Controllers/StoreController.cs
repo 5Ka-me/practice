@@ -16,11 +16,72 @@ namespace Store.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name ="JustGetSmth")]
-        public IEnumerable<User> GetUser()
+        [HttpGet]
+        public ActionResult<IEnumerable<Product>> Get()
         {
+            return storeContext.Products.ToList();
+        }
 
-            return storeContext.Users.ToArray();
+        [HttpGet("{id}")]
+        public ActionResult<Product> Get(int id)
+        {
+            Product product = storeContext.Products.FirstOrDefault(x => x.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+        [HttpPost]
+        public ActionResult<IEnumerable<Product>> CreateProduct(Product product)
+        {
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            storeContext.Products.Add(product);
+            storeContext.SaveChanges();
+
+            return Get();
+        }
+
+        [HttpPut]
+        public ActionResult<IEnumerable<Product>> ChangeProduct(Product product)
+        {
+            if (product == null)
+            {
+                return BadRequest();
+            }
+
+            if (!storeContext.Products.Any(x => x.ProductId == product.ProductId))
+            {
+                return NotFound();
+            }
+
+            storeContext.Products.Update(product);
+            storeContext.SaveChanges();
+
+            return Get();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<IEnumerable<Product>> DeleteProduct(int id)
+        {
+            Product product = storeContext.Products.FirstOrDefault(x => x.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            storeContext.Products.Remove(product);
+            storeContext.SaveChanges();
+
+            return Get();
         }
     }
 }
