@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Store.Models;
 
 namespace Store.Models
 {
@@ -16,9 +15,9 @@ namespace Store.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasData(
-                    new Product { ProductId = 1, ProductName = "Product1", Description = "ProductDiscription1"},
-                    new Product { ProductId = 2, ProductName = "Product2", Description = "ProductDiscription2"},
-                    new Product { ProductId = 3, ProductName = "Product3", Description = "ProductDiscription3"}
+                    new Product { ProductId = 1, ProductName = "Product1", ProductDescription = "ProductDiscription1", ProductPrice = 15},
+                    new Product { ProductId = 2, ProductName = "Product2", ProductDescription = "ProductDiscription2", ProductPrice = 25},
+                    new Product { ProductId = 3, ProductName = "Product3", ProductDescription = "ProductDiscription3", ProductPrice = 35}
             );
         }
     }
