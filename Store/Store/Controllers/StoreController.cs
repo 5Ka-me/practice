@@ -8,80 +8,78 @@ namespace Store.Controllers
     public class StoreController : ControllerBase
     {
         private readonly ILogger<StoreController> _logger;
-        private StoreContext storeContext;
+        private readonly StoreContext _storeContext;
 
         public StoreController(ILogger<StoreController> logger, StoreContext storeContext)
         {
-            this.storeContext = storeContext;
+            _storeContext = storeContext;
             _logger = logger;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> Get()
+        public IEnumerable<Product> Get()
         {
-            return storeContext.Products.ToList();
+            return _storeContext.Products.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> Get(int id)
+        public Product Get(int id)
         {
-            Product product = storeContext.Products.FirstOrDefault(x => x.ProductId == id);
+            Product product = _storeContext.Products.FirstOrDefault(x => x.ProductId == id);
 
             if (product == null)
             {
-                return NotFound();
+                throw new ArgumentException("Product does not exist", nameof(id));
             }
 
-            return Ok(product);
+            return product;
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<Product>> CreateProduct(Product product)
+        public Product CreateProduct(Product product)
         {
             if (product == null)
             {
-                return BadRequest();
+                throw new ArgumentNullException(nameof(product), "Product cannot be null");
             }
 
-            storeContext.Products.Add(product);
-            storeContext.SaveChanges();
+            _storeContext.Products.Add(product);
+            _storeContext.SaveChanges();
 
-            return Get();
+            return product;
         }
 
         [HttpPut]
-        public ActionResult<IEnumerable<Product>> ChangeProduct(Product product)
+        public Product ChangeProduct(Product product)
         {
             if (product == null)
             {
-                return BadRequest();
+                throw new ArgumentNullException(nameof(product), "Product cannot be null");
             }
 
-            if (!storeContext.Products.Any(x => x.ProductId == product.ProductId))
+            if (!_storeContext.Products.Any(x => x.ProductId == product.ProductId))
             {
-                return NotFound();
+                throw new ArgumentException("Product does not exist", nameof(product));
             }
 
-            storeContext.Products.Update(product);
-            storeContext.SaveChanges();
+            _storeContext.Products.Update(product);
+            _storeContext.SaveChanges();
 
-            return Get();
+            return product;
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<IEnumerable<Product>> DeleteProduct(int id)
+        public void DeleteProduct(int id)
         {
-            Product product = storeContext.Products.FirstOrDefault(x => x.ProductId == id);
+            Product product = _storeContext.Products.FirstOrDefault(x => x.ProductId == id);
 
             if (product == null)
             {
-                return NotFound();
+                throw new ArgumentNullException(nameof(id), "Product does not exist");
             }
 
-            storeContext.Products.Remove(product);
-            storeContext.SaveChanges();
-
-            return Get();
+            _storeContext.Products.Remove(product);
+            _storeContext.SaveChanges();
         }
     }
 }

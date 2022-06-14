@@ -13,12 +13,6 @@ namespace Store.Models
 
         public DbSet<Product> Products { get; set; }
 
-        //public DbSet<Receipt> Receipts { get; set; }
-
-        //public DbSet<Storage> Storage { get; set; }
-
-        //public DbSet<User> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasData(
