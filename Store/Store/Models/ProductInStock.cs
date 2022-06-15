@@ -4,7 +4,7 @@ namespace Store.Models
 {
     public class ProductInStock
     {
-        [Key]   
+        [Key]
         public int ProductId { get; set; }
         public int Count { get; set; }
     }
