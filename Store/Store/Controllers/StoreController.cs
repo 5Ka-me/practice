@@ -47,6 +47,8 @@ namespace Store.Controllers
                 throw new ArgumentException("A product with the same name already exists", nameof(product));
             }
 
+            product.IsOnSale = product.ProductPrice < 50;
+
             _storeContext.Products.Add(product);
             _storeContext.SaveChanges();
 
@@ -67,6 +69,8 @@ namespace Store.Controllers
             {
                 throw new ArgumentException("Product has incorrect data", nameof(product));
             }
+
+            product.IsOnSale = product.ProductPrice < 50;
 
             _storeContext.Products.Update(product);
             _storeContext.SaveChanges();
@@ -95,12 +99,12 @@ namespace Store.Controllers
 
         private bool ValidateProduct(Product product)
         {
-            if (string.IsNullOrEmpty(product.ProductName) || product.ProductName.Length > 30)
+            if (string.IsNullOrWhiteSpace(product.ProductName) || product.ProductName.Length > 30)
             {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(product.ProductDescription) || product.ProductDescription.Length > 200)
+            if (string.IsNullOrWhiteSpace(product.ProductDescription) || product.ProductDescription.Length > 200)
             {
                 return false;
             }
