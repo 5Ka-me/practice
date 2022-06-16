@@ -22,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCustomHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -23,7 +23,7 @@ namespace Store.Controllers
         }
 
         [HttpGet("{id}")]
-        public Product Get(int id)
+        public async Task<Product> GetAsync(int id)
         {
             Product product = _storeContext.Products.FirstOrDefault(x => x.ProductId == id);
 
@@ -36,7 +36,7 @@ namespace Store.Controllers
         }
 
         [HttpPost]
-        public Product CreateProduct(Product product)
+        public async Task<Product> CreateProductAsync(Product product)
         {
             if (product == null)
             {
@@ -50,7 +50,7 @@ namespace Store.Controllers
         }
 
         [HttpPut]
-        public Product ChangeProduct(Product product)
+        public async Task<Product> ChangeProductAsync(Product product)
         {
             if (product == null)
             {
@@ -69,7 +69,7 @@ namespace Store.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void DeleteProduct(int id)
+        public async Task DeleteProductAsync(int id)
         {
             Product product = _storeContext.Products.FirstOrDefault(x => x.ProductId == id);
 
