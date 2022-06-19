@@ -17,21 +17,34 @@ namespace Store.Models
             {
                 await _next(context);
             }
-            catch (ArgumentNullException ex)
+            catch (Exception exception)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsync(ex.Message);
+                await HandleExeptionAsync(context, exception);
             }
-            catch(ArgumentException ex)
+        }
+
+        private Task HandleExeptionAsync(HttpContext context, Exception exception)
+        {
+            int statusCode = (int)HttpStatusCode.InternalServerError;
+            string result;
+
+            switch (exception)
             {
-                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsync(ex.Message);
+                case ArgumentNullException:
+                    statusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                case ArgumentException:
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                default:
+                    break;
             }
-            catch(Exception ex)
-            {
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync(ex.Message);
-            }
+
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = statusCode;
+            result = JsonSerializer.Serialize(new ExceptionModel {StatusCode = statusCode, Message = exception.Message });
+
+            return context.Response.WriteAsync(result);
         }
     }
 }
