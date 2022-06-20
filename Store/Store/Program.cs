@@ -22,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCustomHandler();
+app.UseMiddleware<CustomExceptionHandler>();
 
 app.UseHttpsRedirection();
 
