@@ -1,10 +1,12 @@
+using BLL;
+using BLL.Data;
 using Microsoft.EntityFrameworkCore;
-using Store.Models;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
+//builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
 
 // Add services to the container.
 
