@@ -1,12 +1,17 @@
-using BLL;
-using BLL.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using BLL;
+using BLL.Interfaces;
+using DAL;
+using DAL.Interfaces;
+using DAL.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-//builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
+builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
+
+builder.Services.AddScoped<IProductBLL, ProductBLL>();
+builder.Services.AddScoped<IProductDAL, ProductDAL>();
 
 // Add services to the container.
 

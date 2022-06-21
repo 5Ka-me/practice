@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using BLL.Entities;
+using DAL.Entities;
 
-namespace BLL.Data
+namespace DAL.Data
 {
     public class StoreContext : DbContext
     {

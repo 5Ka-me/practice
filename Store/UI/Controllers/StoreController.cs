@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BLL;
-using BLL.Entities;
-using BLL.Data;
-using UI.Models;
+using BLL.Models;
+using BLL.Interfaces;
 
 namespace UI.Controllers
 {
@@ -11,107 +10,50 @@ namespace UI.Controllers
     public class StoreController : ControllerBase
     {
         private readonly ILogger<StoreController> _logger;
-        private readonly ProductManager _productManager;
+        private readonly IProductBLL _productBLL;
 
-        public StoreController(ILogger<StoreController> logger)
+        public StoreController(ILogger<StoreController> logger, IProductBLL productBLL)
         {
             _logger = logger;
-            _productManager = new ProductManager();
+            _productBLL = productBLL;
         }
 
         [HttpGet]
         public IEnumerable<ProductModel> Get()
         {
-            var products = _productManager.Get();
-            var models = Transfer(products);
-            
+            IEnumerable<ProductModel> models = _productBLL.Get();
+
             return models;
         }
         
         [HttpGet("{id}")]
         public ProductModel Get(int id)
         {
-            var product = _productManager.Get(id);
-            var productModel = Transfer(product);
+            ProductModel productModel = _productBLL.Get(id);
 
             return productModel;
         }
 
         [HttpPost]
-        public Product CreateProduct(ProductModel productModel)
+        public ProductModel CreateProduct(ProductModel productModel)
         {
-            var product = Transfer(productModel);
+            _productBLL.CreateProduct(productModel);
 
-            _productManager.CreateProduct(product);
-
-            return product;
+            return productModel;
         }
 
         [HttpPut]
-        public ProductModel ChangeProduct(ProductModel model)
+        public ProductModel ChangeProduct(ProductModel productModel)
         {
-            var product = Transfer(model);
-
-            _productManager.ChangeProduct(product);
+            _productBLL.ChangeProduct(productModel);
             
-            return model;
+            return productModel;
         }
 
         [HttpDelete("{id}")]
         public void DeleteProduct(int id)
         {
-            _productManager.DeleteProduct(id);
-        }
-
-        private ProductModel Transfer(Product product)
-        {
-            ProductModel productModel =
-                new ProductModel()
-                {
-                    ProductDescription = product.ProductDescription,
-                    ProductName = product.ProductName,
-                    ProductPrice = product.ProductPrice
-                };
-
-            return productModel;
-        }
-        
-        private IEnumerable<ProductModel> Transfer(IEnumerable<Product> products)
-        {
-            List<ProductModel> models = new List<ProductModel>();
-
-            foreach (var product in products)
-            {
-                models.Add(Transfer(product));
-            }
-
-            return models;
-        }
-
-        private Product Transfer(ProductModel model)
-        {
-            Product product =
-                new Product()
-                {
-                    ProductId = 0,
-                    ProductName = model.ProductName,
-                    ProductDescription = model.ProductDescription,
-                    ProductPrice = model.ProductPrice
-                };
-
-            return product;
-        }
-        
-        private IEnumerable<Product> Transfer(IEnumerable<ProductModel> models)
-        {
-            List<Product> products = new List<Product>();
-
-            foreach (var model in models)
-            {
-                products.Add(Transfer(model));
-            }
-
-            return products;
+            _productBLL.DeleteProduct(id);
         }
     }
 }
