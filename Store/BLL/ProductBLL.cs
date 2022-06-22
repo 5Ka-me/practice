@@ -7,11 +7,11 @@ namespace BLL
 {
     public class ProductBLL : IProductBLL
     {
-        private readonly IRepository _productDAL;
+        private readonly IRepository _repository;
 
-        public ProductBLL(IRepository productDAL)
+        public ProductBLL(IRepository repository)
         {
-            _productDAL = productDAL;
+            _repository = repository;
         }
 
         public ProductModel ChangeProduct(ProductModel productModel)
@@ -26,12 +26,12 @@ namespace BLL
                 throw new ArgumentException("Product has incorrect data", nameof(productModel));
             }
 
-            if (_productDAL.GetProductById(productModel.ProductId) == null)
+            if (_repository.GetProductById(productModel.ProductId) == null)
             {
                 throw new ArgumentException("Product does not exist", nameof(productModel));
             }
 
-            Product productTemp = _productDAL.GetProductByName(productModel.ProductName);
+            Product productTemp = _repository.GetProductByName(productModel.ProductName);
             if (productTemp != null && productTemp.ProductId != productModel.ProductId)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
@@ -39,11 +39,11 @@ namespace BLL
 
             productModel.IsOnSale = productModel.ProductPrice < 50;
 
-            Product product = _productDAL.GetProductById(productModel.ProductId);
+            Product product = _repository.GetProductById(productModel.ProductId);
 
             Map(productModel, product);
 
-            _productDAL.UpdateProduct(product);
+            _repository.UpdateProduct(product);
 
             Map(product, productModel);
 
@@ -57,7 +57,7 @@ namespace BLL
                 throw new ArgumentException("Product has incorrect data", nameof(productModel));
             }
 
-            if (_productDAL.GetProductByName(productModel.ProductName) != null)
+            if (_repository.GetProductByName(productModel.ProductName) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
             }
@@ -68,7 +68,7 @@ namespace BLL
 
             Map(productModel, product);
 
-            _productDAL.CreateProduct(product);
+            _repository.CreateProduct(product);
 
             Map(product, productModel);
 
@@ -77,30 +77,30 @@ namespace BLL
 
         public void DeleteProduct(int id)
         {
-            Product product = _productDAL.GetProductById(id);
+            Product product = _repository.GetProductById(id);
 
             CheckNullProduct(product);
 
-            _productDAL.DeleteProduct(product);
+            _repository.DeleteProduct(product);
         }
 
         public IEnumerable<ProductModel> Get()
         {
             IEnumerable<ProductModel> productModels;
 
-            productModels = Map(_productDAL.GetProducts().ToList());
+            productModels = Map(_repository.GetProducts().ToList());
 
             return productModels;
         }
 
         public ProductModel Get(int id)
         {
-            Product product = _productDAL.GetProductById(id);
+            Product product = _repository.GetProductById(id);
 
             CheckNullProduct(product);
 
             ProductModel productModel = new();
-            
+
             Map(product, productModel);
 
             return productModel;

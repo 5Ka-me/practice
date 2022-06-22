@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 
-namespace Store.Models
+namespace API.Models
 {
     public class CustomExceptionHandler
     {
@@ -42,7 +42,7 @@ namespace Store.Models
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
-            result = JsonSerializer.Serialize(new ExceptionModel {StatusCode = statusCode, Message = exception.Message });
+            result = JsonSerializer.Serialize(new ExceptionModel { StatusCode = statusCode, Message = exception.Message });
 
             return context.Response.WriteAsync(result);
         }

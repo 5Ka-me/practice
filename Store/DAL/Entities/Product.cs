@@ -9,6 +9,6 @@ namespace DAL.Entities
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public decimal ProductPrice { get; set; }
-        public bool IsOnSale { get; set; }  = false;
+        public bool IsOnSale { get; set; } = false;
     }
 }
