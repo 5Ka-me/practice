@@ -2,7 +2,7 @@
 
 namespace DAL.Interfaces
 {
-    public interface IProductDAL
+    public interface IRepository
     {
         public IEnumerable<Product> GetProducts();
         public Product GetProductById(int id);

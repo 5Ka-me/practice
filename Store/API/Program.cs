@@ -11,7 +11,7 @@ string connection = builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
 
 builder.Services.AddScoped<IProductBLL, ProductBLL>();
-builder.Services.AddScoped<IProductDAL, ProductDAL>();
+builder.Services.AddScoped<IRepository, Repository>();
 
 // Add services to the container.
 

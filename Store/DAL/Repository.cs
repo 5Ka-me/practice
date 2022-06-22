@@ -4,11 +4,11 @@ using DAL.Data;
 
 namespace DAL
 {
-    public class ProductDAL : IProductDAL
+    public class Repository : IRepository
     {
         private readonly StoreContext _storeContext;
 
-        public ProductDAL(StoreContext storeContext)
+        public Repository(StoreContext storeContext)
         {
             _storeContext = storeContext;
         }

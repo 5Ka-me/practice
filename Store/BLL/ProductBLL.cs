@@ -7,9 +7,9 @@ namespace BLL
 {
     public class ProductBLL : IProductBLL
     {
-        private readonly IProductDAL _productDAL;
+        private readonly IRepository _productDAL;
 
-        public ProductBLL(IProductDAL productDAL)
+        public ProductBLL(IRepository productDAL)
         {
             _productDAL = productDAL;
         }
