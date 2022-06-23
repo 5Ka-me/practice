@@ -1,10 +1,18 @@
+using API.Models;
+using BLL;
+using BLL.Interfaces;
+using DAL;
+using DAL.Data;
+using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Store.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(connection));
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Add services to the container.
 

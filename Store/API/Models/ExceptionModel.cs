@@ -1,4 +1,4 @@
-﻿namespace Store.Models
+﻿namespace API.Models
 {
     public class ExceptionModel
     {
