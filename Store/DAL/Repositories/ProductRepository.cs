@@ -1,8 +1,7 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
-using DAL.Data;
 
-namespace DAL
+namespace DAL.Repositories
 {
     public class ProductRepository : IProductRepository
     {
@@ -43,15 +42,13 @@ namespace DAL
         public Product GetById(int id)
         {
             Product product = _storeContext.Products.FirstOrDefault(x => x.Id == id);
-
+            
             return product;
         }
 
         public Product GetByName(string productName)
         {
-            Product product;
-
-            product = _storeContext.Products.FirstOrDefault(x => x.Name == productName);
+            Product product = _storeContext.Products.FirstOrDefault(x => x.Name == productName);
 
             return product;
         }

@@ -3,7 +3,7 @@ using BLL.Models;
 using DAL.Entities;
 using DAL.Interfaces;
 
-namespace BLL
+namespace BLL.Services
 {
     public class ProductService : IProductService
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DAL.Entities;
 
-namespace DAL.Data
+namespace DAL
 {
     public class StoreContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace DAL.Data
         {
             Database.EnsureCreated();
         }
-
+        
         public DbSet<Product> Products { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
