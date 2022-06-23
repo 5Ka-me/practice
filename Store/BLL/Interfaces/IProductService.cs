@@ -7,7 +7,7 @@ namespace BLL.Interfaces
         IEnumerable<ProductModel> Get();
         ProductModel Get(int id);
         ProductModel Create(ProductModel productModel);
-        ProductModel Change(ProductModel productModel);
-        void DeleteProduct(int id);
+        ProductModel Update(ProductModel productModel);
+        void Delete(int id);
     }
 }

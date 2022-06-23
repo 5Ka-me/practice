@@ -14,7 +14,7 @@ namespace BLL
             _repository = repository;
         }
 
-        public ProductModel Change(ProductModel productModel)
+        public ProductModel Update(ProductModel productModel)
         {
             if (productModel == null)
             {
@@ -75,7 +75,7 @@ namespace BLL
             return productModel;
         }
 
-        public void DeleteProduct(int id)
+        public void Delete(int id)
         {
             Product product = _repository.GetById(id);
 
