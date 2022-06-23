@@ -4,16 +4,16 @@ using DAL.Data;
 
 namespace DAL
 {
-    public class Repository : IRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly StoreContext _storeContext;
 
-        public Repository(StoreContext storeContext)
+        public ProductRepository(StoreContext storeContext)
         {
             _storeContext = storeContext;
         }
 
-        public Product UpdateProduct(Product product)
+        public Product Update(Product product)
         {
             _storeContext.Products.Update(product);
             _storeContext.SaveChanges();
@@ -21,7 +21,7 @@ namespace DAL
             return product;
         }
 
-        public Product CreateProduct(Product product)
+        public Product Create(Product product)
         {
             _storeContext.Products.Add(product);
             _storeContext.SaveChanges();
@@ -29,29 +29,29 @@ namespace DAL
             return product;
         }
 
-        public void DeleteProduct(Product product)
+        public void Delete(Product product)
         {
             _storeContext.Products.Remove(product);
             _storeContext.SaveChanges();
         }
 
-        public IEnumerable<Product> GetProducts()
+        public IEnumerable<Product> Get()
         {
             return _storeContext.Products.ToList();
         }
 
-        public Product GetProductById(int id)
+        public Product GetById(int id)
         {
-            Product product = _storeContext.Products.FirstOrDefault(x => x.ProductId == id);
+            Product product = _storeContext.Products.FirstOrDefault(x => x.Id == id);
 
             return product;
         }
 
-        public Product GetProductByName(string productName)
+        public Product GetByName(string productName)
         {
             Product product;
 
-            product = _storeContext.Products.FirstOrDefault(x => x.ProductName == productName);
+            product = _storeContext.Products.FirstOrDefault(x => x.Name == productName);
 
             return product;
         }

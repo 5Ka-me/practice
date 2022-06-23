@@ -10,9 +10,9 @@ namespace UI.Controllers
     public class StoreController : ControllerBase
     {
         private readonly ILogger<StoreController> _logger;
-        private readonly IProductBLL _productBLL;
+        private readonly IProductService _productBLL;
 
-        public StoreController(ILogger<StoreController> logger, IProductBLL productBLL)
+        public StoreController(ILogger<StoreController> logger, IProductService productBLL)
         {
             _logger = logger;
             _productBLL = productBLL;
@@ -37,7 +37,7 @@ namespace UI.Controllers
         [HttpPost]
         public ProductModel CreateProduct(ProductModel productModel)
         {
-            _productBLL.CreateProduct(productModel);
+            _productBLL.Create(productModel);
 
             return productModel;
         }
@@ -45,7 +45,7 @@ namespace UI.Controllers
         [HttpPut]
         public ProductModel ChangeProduct(ProductModel productModel)
         {
-            _productBLL.ChangeProduct(productModel);
+            _productBLL.Change(productModel);
             
             return productModel;
         }
