@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DAL.Entities;
+﻿using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Data
+namespace DAL
 {
     public class StoreContext : DbContext
     {
@@ -24,9 +24,9 @@ namespace DAL.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Name = "Product1", Description = "ProductDescription1", Price = 15, IsOnSale = false},
-                new Product { Id = 2, Name = "Product2", Description = "ProductDescription2", Price = 25, IsOnSale = false},
-                new Product { Id = 3, Name = "Product3", Description = "ProductDescription3", Price = 35, IsOnSale = false}
+                new Product { Id = 1, Name = "Product1", Description = "ProductDescription1", Price = 15, IsOnSale = false },
+                new Product { Id = 2, Name = "Product2", Description = "ProductDescription2", Price = 25, IsOnSale = false },
+                new Product { Id = 3, Name = "Product3", Description = "ProductDescription3", Price = 35, IsOnSale = false }
             );
         }
     }

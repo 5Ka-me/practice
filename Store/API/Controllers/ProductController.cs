@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using BLL;
-using BLL.Models;
+using API.Services;
+using API.ViewModels;
 using BLL.Interfaces;
+using BLL.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
@@ -19,35 +20,51 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProductModel> Get()
+        public IEnumerable<ProductViewModel> Get()
         {
             IEnumerable<ProductModel> models = _productService.Get();
+            IEnumerable<ProductViewModel> viewModels = MapService.Map(models);
 
-            return models;
+            return viewModels;
         }
-        
+
         [HttpGet("{id}")]
-        public ProductModel Get(int id)
+        public ProductViewModel Get(int id)
         {
             ProductModel productModel = _productService.Get(id);
+            ProductViewModel productViewModel = new();
 
-            return productModel;
+            MapService.Map(productModel, productViewModel);
+
+            return productViewModel;
         }
 
         [HttpPost]
-        public ProductModel Create(ProductModel productModel)
+        public ProductViewModel Create(ProductViewModel productViewModel)
         {
-            _productService.Create(productModel);
+            ProductModel productModel = new ProductModel();
 
-            return productModel;
+            MapService.Map(productViewModel, productModel);
+
+            productModel = _productService.Create(productModel);
+
+            MapService.Map(productModel, productViewModel);
+
+            return productViewModel;
         }
 
         [HttpPut]
-        public ProductModel Update(ProductModel productModel)
+        public ProductViewModel Update(ProductViewModel productViewModel)
         {
+            ProductModel productModel = new ProductModel();
+
+            MapService.Map(productViewModel, productModel);
+
             _productService.Update(productModel);
-            
-            return productModel;
+
+            MapService.Map(productModel, productViewModel);
+
+            return productViewModel;
         }
 
         [HttpDelete("{id}")]

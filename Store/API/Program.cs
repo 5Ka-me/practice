@@ -1,8 +1,8 @@
 using API.Models;
-using BLL;
 using BLL.Interfaces;
+using BLL.Services;
 using DAL;
-using DAL.Data;
+using DAL.Repositories;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
