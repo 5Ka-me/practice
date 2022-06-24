@@ -72,7 +72,5 @@ namespace API.Controllers
         {
             _productService.Delete(id);
         }
-
-
     }
 }
