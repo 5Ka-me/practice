@@ -41,11 +41,11 @@ namespace BLL.Services
 
             Product product = _repository.GetById(productModel.Id);
 
-            Map(productModel, product);
+            MapService.Map(productModel, product);
 
             _repository.Update(product);
 
-            Map(product, productModel);
+            MapService.Map(product, productModel);
 
             return productModel;
         }
@@ -66,11 +66,11 @@ namespace BLL.Services
 
             Product product = new();
 
-            Map(productModel, product);
+            MapService.Map(productModel, product);
 
             _repository.Create(product);
 
-            Map(product, productModel);
+            MapService.Map(product, productModel);
 
             return productModel;
         }
@@ -88,7 +88,7 @@ namespace BLL.Services
         {
             IEnumerable<ProductModel> productModels;
 
-            productModels = Map(_repository.Get().ToList());
+            productModels = MapService.Map(_repository.Get().ToList());
 
             return productModels;
         }
@@ -101,40 +101,9 @@ namespace BLL.Services
 
             ProductModel productModel = new();
 
-            Map(product, productModel);
+            MapService.Map(product, productModel);
 
             return productModel;
-        }
-
-        private void Map(Product product, ProductModel productModel)
-        {
-            productModel.Id = product.Id;
-            productModel.Description = product.Description;
-            productModel.Name = product.Name;
-            productModel.Price = product.Price;
-            productModel.IsOnSale = product.IsOnSale;
-        }
-
-        private IEnumerable<ProductModel> Map(IEnumerable<Product> products)
-        {
-            List<ProductModel> models = new();
-
-            foreach (var product in products)
-            {
-                ProductModel productModel = new();
-                Map(product, productModel);
-                models.Add(productModel);
-            }
-
-            return models;
-        }
-
-        private void Map(ProductModel model, Product product)
-        {
-            product.Name = model.Name;
-            product.Description = model.Description;
-            product.Price = model.Price;
-            product.IsOnSale = model.IsOnSale;
         }
 
         private void CheckNullProduct(Product product)

@@ -41,14 +41,14 @@ namespace DAL.Repositories
 
         public Product GetById(int id)
         {
-            Product product = _storeContext.Products.FirstOrDefault(x => x.Id == id);
-            
+            Product product = _storeContext.Products.SingleOrDefault(x => x.Id == id);
+
             return product;
         }
 
         public Product GetByName(string productName)
         {
-            Product product = _storeContext.Products.FirstOrDefault(x => x.Name == productName);
+            Product product = _storeContext.Products.SingleOrDefault(x => x.Name == productName);
 
             return product;
         }
