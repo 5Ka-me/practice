@@ -1,5 +1,5 @@
-using API.Services;
 using API.ViewModels;
+using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,18 +12,20 @@ namespace API.Controllers
     {
         private readonly ILogger<ProductController> _logger;
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public ProductController(ILogger<ProductController> logger, IProductService productService)
+        public ProductController(ILogger<ProductController> logger, IProductService productService, IMapper mapper)
         {
             _logger = logger;
             _productService = productService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IEnumerable<ProductViewModel> Get()
         {
             IEnumerable<ProductModel> models = _productService.Get();
-            IEnumerable<ProductViewModel> viewModels = MapService.Map(models);
+            IEnumerable<ProductViewModel> viewModels = _mapper.Map<IEnumerable<ProductViewModel>>(models);
 
             return viewModels;
         }
@@ -34,7 +36,7 @@ namespace API.Controllers
             ProductModel productModel = _productService.Get(id);
             ProductViewModel productViewModel = new();
 
-            MapService.Map(productModel, productViewModel);
+            _mapper.Map(productModel, productViewModel);
 
             return productViewModel;
         }
@@ -44,11 +46,11 @@ namespace API.Controllers
         {
             ProductModel productModel = new ProductModel();
 
-            MapService.Map(productViewModel, productModel);
+            _mapper.Map(productViewModel, productModel);
 
             productModel = _productService.Create(productModel);
 
-            MapService.Map(productModel, productViewModel);
+            _mapper.Map(productModel, productViewModel);
 
             return productViewModel;
         }
@@ -58,11 +60,11 @@ namespace API.Controllers
         {
             ProductModel productModel = new ProductModel();
 
-            MapService.Map(productViewModel, productModel);
+            _mapper.Map(productViewModel, productModel);
 
             _productService.Update(productModel);
 
-            MapService.Map(productModel, productViewModel);
+            _mapper.Map(productModel, productViewModel);
 
             return productViewModel;
         }

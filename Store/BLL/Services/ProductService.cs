@@ -1,4 +1,5 @@
-﻿using BLL.Interfaces;
+﻿using AutoMapper;
+using BLL.Interfaces;
 using BLL.Models;
 using DAL.Entities;
 using DAL.Interfaces;
@@ -8,10 +9,12 @@ namespace BLL.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository)
+        public ProductService(IProductRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public ProductModel Update(ProductModel productModel)
@@ -41,11 +44,11 @@ namespace BLL.Services
 
             Product product = _repository.GetById(productModel.Id);
 
-            MapService.Map(productModel, product);
+            _mapper.Map(productModel, product);
 
             _repository.Update(product);
 
-            MapService.Map(product, productModel);
+            _mapper.Map(product, productModel);
 
             return productModel;
         }
@@ -66,11 +69,11 @@ namespace BLL.Services
 
             Product product = new();
 
-            MapService.Map(productModel, product);
+            _mapper.Map(productModel, product);
 
             _repository.Create(product);
 
-            MapService.Map(product, productModel);
+            _mapper.Map(product, productModel);
 
             return productModel;
         }
@@ -86,9 +89,8 @@ namespace BLL.Services
 
         public IEnumerable<ProductModel> Get()
         {
-            IEnumerable<ProductModel> productModels;
-
-            productModels = MapService.Map(_repository.Get().ToList());
+            IEnumerable<Product> products = _repository.Get();
+            IEnumerable<ProductModel> productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
 
             return productModels;
         }
@@ -101,7 +103,7 @@ namespace BLL.Services
 
             ProductModel productModel = new();
 
-            MapService.Map(product, productModel);
+            _mapper.Map(product, productModel);
 
             return productModel;
         }
