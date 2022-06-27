@@ -14,6 +14,7 @@ builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(conn
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 
