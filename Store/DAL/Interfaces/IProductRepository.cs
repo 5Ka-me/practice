@@ -2,13 +2,8 @@
 
 namespace DAL.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        IEnumerable<Product> Get();
-        Product GetById(int id);
-        Product Create(Product product);
-        Product Update(Product product);
-        void Delete(Product product);
         Product GetByName(string productName);
     }
 }
