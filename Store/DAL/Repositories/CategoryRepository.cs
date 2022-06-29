@@ -12,7 +12,7 @@ namespace DAL.Repositories
             _storeContext = storeContext;
         }
 
-        public Category Get(int id)
+        public Category GetById(int id)
         {
             Category category = _storeContext.Categories.SingleOrDefault(x => x.Id == id);
 
