@@ -2,8 +2,6 @@
 
 namespace DAL.Interfaces
 {
-    public interface ICategoryRepository
-    {
-        Category GetById(int id);
-    }
+    public interface ICategoryRepository : IGenericRepository<Category>
+    { }
 }
