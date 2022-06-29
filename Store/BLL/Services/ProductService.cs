@@ -36,7 +36,7 @@ namespace BLL.Services
                 throw new ArgumentException("Product does not exist", nameof(productModel));
             }
 
-            if (_categoryRepository.GetById(productModel.CategoryId) == null)
+            if (_categoryRepository.Get(productModel.CategoryId) == null)
             {
                 throw new ArgumentException("Category not found", nameof(productModel));
             }
@@ -72,7 +72,7 @@ namespace BLL.Services
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
             }
 
-            if (_categoryRepository.GetById(productModel.CategoryId) == null)
+            if (_categoryRepository.Get(productModel.CategoryId) == null)
             {
                 throw new ArgumentException("Category not found", nameof(productModel));
             }
