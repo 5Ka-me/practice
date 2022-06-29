@@ -8,12 +8,14 @@ namespace BLL.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
         {
-            _repository = repository;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
@@ -29,12 +31,17 @@ namespace BLL.Services
                 throw new ArgumentException("Product has incorrect data", nameof(productModel));
             }
 
-            if (_repository.GetById(productModel.Id) == null)
+            if (_productRepository.GetById(productModel.Id) == null)
             {
                 throw new ArgumentException("Product does not exist", nameof(productModel));
             }
 
-            Product productTemp = _repository.GetByName(productModel.Name);
+            if (_categoryRepository.GetById(productModel.CategoryId) == null)
+            {
+                throw new ArgumentException("Category not found", nameof(productModel));
+            }
+
+            Product productTemp = _productRepository.GetByName(productModel.Name);
             if (productTemp != null && productTemp.Id != productModel.Id)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
@@ -42,11 +49,11 @@ namespace BLL.Services
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            Product product = _repository.GetById(productModel.Id);
+            Product product = _productRepository.GetById(productModel.Id);
 
             _mapper.Map(productModel, product);
 
-            _repository.Update(product);
+            _productRepository.Update(product);
 
             _mapper.Map(product, productModel);
 
@@ -60,9 +67,14 @@ namespace BLL.Services
                 throw new ArgumentException("Product has incorrect data", nameof(productModel));
             }
 
-            if (_repository.GetByName(productModel.Name) != null)
+            if (_productRepository.GetByName(productModel.Name) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
+            }
+
+            if (_categoryRepository.GetById(productModel.CategoryId) == null)
+            {
+                throw new ArgumentException("Category not found", nameof(productModel));
             }
 
             productModel.IsOnSale = productModel.Price < 50;
@@ -71,7 +83,7 @@ namespace BLL.Services
 
             _mapper.Map(productModel, product);
 
-            _repository.Create(product);
+            _productRepository.Create(product);
 
             _mapper.Map(product, productModel);
 
@@ -80,16 +92,16 @@ namespace BLL.Services
 
         public void Delete(int id)
         {
-            Product product = _repository.GetById(id);
+            Product product = _productRepository.GetById(id);
 
             CheckNullProduct(product);
 
-            _repository.Delete(product);
+            _productRepository.Delete(product);
         }
 
         public IEnumerable<ProductModel> Get()
         {
-            IEnumerable<Product> products = _repository.Get();
+            IEnumerable<Product> products = _productRepository.Get();
             IEnumerable<ProductModel> productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
 
             return productModels;
@@ -97,7 +109,7 @@ namespace BLL.Services
 
         public ProductModel Get(int id)
         {
-            Product product = _repository.GetById(id);
+            Product product = _productRepository.GetById(id);
 
             CheckNullProduct(product);
 
