@@ -3,6 +3,7 @@ using BLL.Interfaces;
 using BLL.Models;
 using DAL.Entities;
 using DAL.Interfaces;
+using FluentValidation;
 
 namespace BLL.Services
 {
@@ -11,35 +12,26 @@ namespace BLL.Services
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<ProductModel> _validator;
 
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper, IValidator<ProductModel> validator)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public ProductModel Update(ProductModel productModel)
         {
-            if (productModel == null)
-            {
-                throw new ArgumentNullException(nameof(productModel), "Product does not exist");
-            }
-
-            if (!ValidateProduct(productModel))
-            {
-                throw new ArgumentException("Product has incorrect data", nameof(productModel));
-            }
+            _validator.ValidateAndThrow(productModel);
 
             if (_productRepository.GetById(productModel.Id) == null)
             {
-                throw new ArgumentException("Product does not exist", nameof(productModel));
+                throw new ArgumentException("Product not found", nameof(productModel));
             }
 
-            if (_categoryRepository.GetById(productModel.CategoryId) == null)
-            {
-                throw new ArgumentException("Category not found", nameof(productModel));
-            }
+            CheckCategoryExist(productModel.CategoryId);
 
             Product productTemp = _productRepository.GetByName(productModel.Name);
             if (productTemp != null && productTemp.Id != productModel.Id)
@@ -62,19 +54,13 @@ namespace BLL.Services
 
         public ProductModel Create(ProductModel productModel)
         {
-            if (!ValidateProduct(productModel))
-            {
-                throw new ArgumentException("Product has incorrect data", nameof(productModel));
-            }
+            _validator.ValidateAndThrow(productModel);
+
+            CheckCategoryExist(productModel.CategoryId);
 
             if (_productRepository.GetByName(productModel.Name) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
-            }
-
-            if (_categoryRepository.GetById(productModel.CategoryId) == null)
-            {
-                throw new ArgumentException("Category not found", nameof(productModel));
             }
 
             productModel.IsOnSale = productModel.Price < 50;
@@ -128,29 +114,12 @@ namespace BLL.Services
             }
         }
 
-        private bool ValidateProduct(ProductModel productModel)
+        private void CheckCategoryExist(int categoryId)
         {
-            if (string.IsNullOrWhiteSpace(productModel.Name) || productModel.Name.Length > 30)
+            if (_categoryRepository.GetById(categoryId) == null)
             {
-                return false;
+                throw new ArgumentException("Category not found");
             }
-
-            if (string.IsNullOrWhiteSpace(productModel.Description) || productModel.Description.Length > 200)
-            {
-                return false;
-            }
-
-            if (!productModel.Name.All(char.IsLetterOrDigit))
-            {
-                return false;
-            }
-
-            if (productModel.Price <= 0)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }
