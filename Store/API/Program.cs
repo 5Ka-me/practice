@@ -1,10 +1,13 @@
 using API.Models;
 using API.Profiles;
 using BLL.Interfaces;
+using BLL.Models;
 using BLL.Services;
+using BLL.Validators;
 using DAL;
 using DAL.Interfaces;
 using DAL.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,7 @@ builder.Services.AddDbContext<StoreContext>(options => options.UseSqlServer(conn
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IValidator<ProductModel>, ProductValidator>();
 
 builder.Services.AddAutoMapper(typeof(ProductProfile));
 

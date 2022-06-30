@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
 using BLL.Models;
-using BLL.Validators;
 using DAL.Entities;
 using DAL.Interfaces;
 using FluentValidation;
@@ -13,23 +12,26 @@ namespace BLL.Services
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<ProductModel> _validator;
 
-        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper, IValidator<ProductModel> validator)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _validator = validator;
         }
 
         public ProductModel Update(ProductModel productModel)
         {
-            ProductValidator productValidator = new(_categoryRepository);
-            productValidator.ValidateAndThrow(productModel);
+            _validator.ValidateAndThrow(productModel);
 
             if (_productRepository.GetById(productModel.Id) == null)
             {
                 throw new ArgumentException("Product not found", nameof(productModel));
             }
+
+            CheckCategoryExist(productModel.CategoryId);
 
             Product productTemp = _productRepository.GetByName(productModel.Name);
             if (productTemp != null && productTemp.Id != productModel.Id)
@@ -52,8 +54,9 @@ namespace BLL.Services
 
         public ProductModel Create(ProductModel productModel)
         {
-            ProductValidator productValidator = new(_categoryRepository);
-            productValidator.ValidateAndThrow(productModel);
+            _validator.ValidateAndThrow(productModel);
+
+            CheckCategoryExist(productModel.CategoryId);
 
             if (_productRepository.GetByName(productModel.Name) != null)
             {
@@ -108,6 +111,14 @@ namespace BLL.Services
             if (product == null)
             {
                 throw new ArgumentNullException(nameof(product), "Product does not exist");
+            }
+        }
+
+        private void CheckCategoryExist(int categoryId)
+        {
+            if (_categoryRepository.GetById(categoryId) == null)
+            {
+                throw new ArgumentException("Category not found");
             }
         }
     }
