@@ -1,5 +1,6 @@
 ﻿using DAL.Entities;
 using DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -9,9 +10,9 @@ namespace DAL.Repositories
         : base(storeContext)
         { }
 
-        public Product GetByName(string productName)
+        public async Task<Product> GetByNameAsync(string productName)
         {
-            Product product = _storeContext.Products.SingleOrDefault(x => x.Name == productName);
+            Product product = await _storeContext.Products.SingleOrDefaultAsync(x => x.Name == productName);
 
             return product;
         }

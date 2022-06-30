@@ -22,18 +22,18 @@ namespace BLL.Services
             _validator = validator;
         }
 
-        public ProductModel Update(ProductModel productModel)
+        public async Task<ProductModel> UpdateAsync(ProductModel productModel)
         {
-            _validator.ValidateAndThrow(productModel);
+            await _validator.ValidateAndThrowAsync(productModel);
 
-            if (_productRepository.GetById(productModel.Id) == null)
+            if (await _productRepository.GetByIdAsync(productModel.Id) == null)
             {
                 throw new ArgumentException("Product not found", nameof(productModel));
             }
 
-            CheckCategoryExist(productModel.CategoryId);
+            await CheckCategoryExistAsync(productModel.CategoryId);
 
-            Product productTemp = _productRepository.GetByName(productModel.Name);
+            var productTemp = await _productRepository.GetByNameAsync(productModel.Name);
             if (productTemp != null && productTemp.Id != productModel.Id)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
@@ -41,24 +41,24 @@ namespace BLL.Services
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            Product product = _productRepository.GetById(productModel.Id);
+            var product = await _productRepository.GetByIdAsync(productModel.Id);
 
             _mapper.Map(productModel, product);
 
-            _productRepository.Update(product);
+            await _productRepository.UpdateAsync(product);
 
             _mapper.Map(product, productModel);
 
             return productModel;
         }
 
-        public ProductModel Create(ProductModel productModel)
+        public async Task<ProductModel> CreateAsync(ProductModel productModel)
         {
-            _validator.ValidateAndThrow(productModel);
+            await _validator.ValidateAndThrowAsync(productModel);
 
-            CheckCategoryExist(productModel.CategoryId);
+            await CheckCategoryExistAsync(productModel.CategoryId);
 
-            if (_productRepository.GetByName(productModel.Name) != null)
+            if (await _productRepository.GetByNameAsync(productModel.Name) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
             }
@@ -69,33 +69,33 @@ namespace BLL.Services
 
             _mapper.Map(productModel, product);
 
-            _productRepository.Create(product);
+            await _productRepository.CreateAsync(product);
 
             _mapper.Map(product, productModel);
 
             return productModel;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Product product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
 
             CheckNullProduct(product);
 
-            _productRepository.Delete(product);
+            _productRepository.DeleteAsync(product);
         }
 
-        public IEnumerable<ProductModel> Get()
+        public async Task<IEnumerable<ProductModel>> GetAsync()
         {
-            IEnumerable<Product> products = _productRepository.Get();
+            IEnumerable<Product> products = await _productRepository.GetAsync();
             IEnumerable<ProductModel> productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
 
             return productModels;
         }
 
-        public ProductModel Get(int id)
+        public async Task<ProductModel> GetAsync(int id)
         {
-            Product product = _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
 
             CheckNullProduct(product);
 
@@ -114,9 +114,9 @@ namespace BLL.Services
             }
         }
 
-        private void CheckCategoryExist(int categoryId)
+        private async Task CheckCategoryExistAsync(int categoryId)
         {
-            if (_categoryRepository.GetById(categoryId) == null)
+            if (await _categoryRepository.GetByIdAsync(categoryId) == null)
             {
                 throw new ArgumentException("Category not found");
             }

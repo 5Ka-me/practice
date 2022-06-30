@@ -22,18 +22,18 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<ProductViewModel> Get()
+        public async Task<IEnumerable<ProductViewModel>> GetAsync()
         {
-            IEnumerable<ProductModel> models = _productService.Get();
+            IEnumerable<ProductModel> models = await _productService.GetAsync();
             IEnumerable<ProductViewModel> viewModels = _mapper.Map<IEnumerable<ProductViewModel>>(models);
 
             return viewModels;
         }
 
         [HttpGet("{id}")]
-        public ProductViewModel Get(int id)
+        public async Task<ProductViewModel> GetAsync(int id)
         {
-            ProductModel productModel = _productService.Get(id);
+            ProductModel productModel = await _productService.GetAsync(id);
             ProductViewModel productViewModel = new();
 
             _mapper.Map(productModel, productViewModel);
@@ -42,13 +42,13 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ProductViewModel Create(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> CreateAsync(ProductViewModel productViewModel)
         {
-            ProductModel productModel = new ProductModel();
+            ProductModel productModel = new();
 
             _mapper.Map(productViewModel, productModel);
 
-            productModel = _productService.Create(productModel);
+            productModel = await _productService.CreateAsync(productModel);
 
             _mapper.Map(productModel, productViewModel);
 
@@ -56,13 +56,13 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public ProductViewModel Update(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> UpdateAsync(ProductViewModel productViewModel)
         {
-            ProductModel productModel = new ProductModel();
+            ProductModel productModel = new();
 
             _mapper.Map(productViewModel, productModel);
 
-            _productService.Update(productModel);
+            await _productService.UpdateAsync(productModel);
 
             _mapper.Map(productModel, productViewModel);
 
@@ -70,9 +70,9 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            _productService.Delete(id);
+            await _productService.DeleteAsync(id);
         }
     }
 }

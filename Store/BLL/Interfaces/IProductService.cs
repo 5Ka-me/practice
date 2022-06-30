@@ -4,10 +4,10 @@ namespace BLL.Interfaces
 {
     public interface IProductService
     {
-        IEnumerable<ProductModel> Get();
-        ProductModel Get(int id);
-        ProductModel Create(ProductModel productModel);
-        ProductModel Update(ProductModel productModel);
-        void Delete(int id);
+        Task<IEnumerable<ProductModel>> GetAsync();
+        Task<ProductModel> GetAsync(int id);
+        Task<ProductModel> CreateAsync(ProductModel productModel);
+        Task<ProductModel> UpdateAsync(ProductModel productModel);
+        Task DeleteAsync(int id);
     }
 }
