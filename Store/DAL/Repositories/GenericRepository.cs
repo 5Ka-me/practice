@@ -14,38 +14,37 @@ namespace DAL.Repositories
             _dbSet = _storeContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAsync()
+        public async Task<IEnumerable<T>> GetAsync(CancellationToken cancellationToken)
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            T entity = await _dbSet.FindAsync(id);
 
-            return entity;
+            return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Add(entity);
-            await _storeContext.SaveChangesAsync();
+            await _storeContext.SaveChangesAsync(cancellationToken);
 
             return entity;
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Update(entity);
-            await _storeContext.SaveChangesAsync();
+            await _storeContext.SaveChangesAsync(cancellationToken);
 
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Remove(entity);
-            await _storeContext.SaveChangesAsync();
+            await _storeContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
