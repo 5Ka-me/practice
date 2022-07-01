@@ -22,53 +22,45 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProductViewModel>> GetAsync()
+        public async Task<IEnumerable<ProductViewModel>> Get()
         {
-            IEnumerable<ProductModel> models = await _productService.GetAsync();
+            var models = await _productService.Get();
 
             return _mapper.Map<IEnumerable<ProductViewModel>>(models);
         }
 
         [HttpGet("{id}")]
-        public async Task<ProductViewModel> GetAsync(int id)
+        public async Task<ProductViewModel> Get(int id)
         {
-            ProductModel productModel = await _productService.GetAsync(id);
+            var productModel = await _productService.Get(id);
 
             return _mapper.Map<ProductViewModel>(productModel);
         }
 
         [HttpPost]
-        public async Task<ProductViewModel> CreateAsync(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> Create(ProductViewModel productViewModel)
         {
-            ProductModel productModel = new();
+            var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            _mapper.Map(productViewModel, productModel);
+            productModel = await _productService.Create(productModel);
 
-            productModel = await _productService.CreateAsync(productModel);
-
-            _mapper.Map(productModel, productViewModel);
-
-            return productViewModel;
+            return _mapper.Map<ProductViewModel>(productModel);
         }
 
         [HttpPut]
-        public async Task<ProductViewModel> UpdateAsync(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> Update(ProductViewModel productViewModel)
         {
-            ProductModel productModel = new();
+            var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            _mapper.Map(productViewModel, productModel);
+            productModel = await _productService.Update(productModel);
 
-            await _productService.UpdateAsync(productModel);
-
-            _mapper.Map(productModel, productViewModel);
-
-            return productViewModel;
+            return _mapper.Map(productModel, productViewModel);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteAsync(int id)
+        public async Task Delete(int id)
         {
-            await _productService.DeleteAsync(id);
+            await _productService.Delete(id);
         }
     }
 }

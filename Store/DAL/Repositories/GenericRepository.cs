@@ -14,19 +14,17 @@ namespace DAL.Repositories
             _dbSet = _storeContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAsync()
+        public async Task<IEnumerable<T>> Get()
         {
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetById(int id)
         {
-            T entity = await _dbSet.FindAsync(id);
-
-            return entity;
+            return await _dbSet.FindAsync(id);
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public async Task<T> Create(T entity)
         {
             _dbSet.Add(entity);
             await _storeContext.SaveChangesAsync();
@@ -34,7 +32,7 @@ namespace DAL.Repositories
             return entity;
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task<T> Update(T entity)
         {
             _dbSet.Update(entity);
             await _storeContext.SaveChangesAsync();
@@ -42,7 +40,7 @@ namespace DAL.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public async Task Delete(T entity)
         {
             _dbSet.Remove(entity);
             await _storeContext.SaveChangesAsync();

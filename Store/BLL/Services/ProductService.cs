@@ -22,18 +22,18 @@ namespace BLL.Services
             _validator = validator;
         }
 
-        public async Task<ProductModel> UpdateAsync(ProductModel productModel)
+        public async Task<ProductModel> Update(ProductModel productModel)
         {
             await _validator.ValidateAndThrowAsync(productModel);
 
-            if (await _productRepository.GetByIdAsync(productModel.Id) == null)
+            if (await _productRepository.GetById(productModel.Id) == null)
             {
                 throw new ArgumentException("Product not found", nameof(productModel));
             }
 
-            await CheckCategoryExistAsync(productModel.CategoryId);
+            await CheckCategoryExist(productModel.CategoryId);
 
-            var productTemp = await _productRepository.GetByNameAsync(productModel.Name);
+            var productTemp = await _productRepository.GetByName(productModel.Name);
             if (productTemp != null && productTemp.Id != productModel.Id)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
@@ -41,72 +41,61 @@ namespace BLL.Services
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            var product = await _productRepository.GetByIdAsync(productModel.Id);
+            var product = await _productRepository.GetById(productModel.Id);
 
             _mapper.Map(productModel, product);
 
-            await _productRepository.UpdateAsync(product);
+            await _productRepository.Update(product);
 
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map(product, productModel);
         }
 
-        public async Task<ProductModel> CreateAsync(ProductModel productModel)
+        public async Task<ProductModel> Create(ProductModel productModel)
         {
             await _validator.ValidateAndThrowAsync(productModel);
 
-            await CheckCategoryExistAsync(productModel.CategoryId);
+            await CheckCategoryExist(productModel.CategoryId);
 
-            if (await _productRepository.GetByNameAsync(productModel.Name) != null)
+            if (await _productRepository.GetByName(productModel.Name) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
             }
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            Product product = new();
+            var product = _mapper.Map<Product>(productModel);
 
-            _mapper.Map(productModel, product);
+            await _productRepository.Create(product);
 
-            await _productRepository.CreateAsync(product);
-
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map(product, productModel);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task Delete(int id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _productRepository.GetById(id);
 
             CheckNullProduct(product);
 
-            _productRepository.DeleteAsync(product);
+            await _productRepository.Delete(product);
         }
 
-        public async Task<IEnumerable<ProductModel>> GetAsync()
+        public async Task<IEnumerable<ProductModel>> Get()
         {
-            IEnumerable<Product> products = await _productRepository.GetAsync();
-            IEnumerable<ProductModel> productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
+            var products = await _productRepository.Get();
 
-            return productModels;
+            return _mapper.Map<IEnumerable<ProductModel>>(products);
         }
 
-        public async Task<ProductModel> GetAsync(int id)
+        public async Task<ProductModel> Get(int id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _productRepository.GetById(id);
 
             CheckNullProduct(product);
 
-            ProductModel productModel = new();
-
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map<ProductModel>(product);
         }
 
-        private void CheckNullProduct(Product product)
+        private static void CheckNullProduct(Product product)
         {
             if (product == null)
             {
@@ -114,9 +103,9 @@ namespace BLL.Services
             }
         }
 
-        private async Task CheckCategoryExistAsync(int categoryId)
+        private async Task CheckCategoryExist(int categoryId)
         {
-            if (await _categoryRepository.GetByIdAsync(categoryId) == null)
+            if (await _categoryRepository.GetById(categoryId) == null)
             {
                 throw new ArgumentException("Category not found");
             }
