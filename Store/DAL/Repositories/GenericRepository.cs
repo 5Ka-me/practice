@@ -16,7 +16,7 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<T>> GetAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)

@@ -25,20 +25,16 @@ namespace API.Controllers
         public async Task<IEnumerable<ProductViewModel>> GetAsync()
         {
             IEnumerable<ProductModel> models = await _productService.GetAsync();
-            IEnumerable<ProductViewModel> viewModels = _mapper.Map<IEnumerable<ProductViewModel>>(models);
 
-            return viewModels;
+            return _mapper.Map<IEnumerable<ProductViewModel>>(models);
         }
 
         [HttpGet("{id}")]
         public async Task<ProductViewModel> GetAsync(int id)
         {
             ProductModel productModel = await _productService.GetAsync(id);
-            ProductViewModel productViewModel = new();
 
-            _mapper.Map(productModel, productViewModel);
-
-            return productViewModel;
+            return _mapper.Map<ProductViewModel>(productModel);
         }
 
         [HttpPost]
