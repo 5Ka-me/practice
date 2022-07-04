@@ -22,45 +22,47 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProductViewModel>> Get()
+        public async Task<IEnumerable<ProductViewModel>> Get(CancellationToken cancellationToken)
         {
-            var models = await _productService.Get();
+            var models = await _productService.Get(cancellationToken);
 
             return _mapper.Map<IEnumerable<ProductViewModel>>(models);
         }
 
         [HttpGet("{id}")]
-        public async Task<ProductViewModel> Get(int id)
+        public async Task<ProductViewModel> Get(int id, CancellationToken cancellationToken)
         {
-            var productModel = await _productService.Get(id);
+            var productModel = await _productService.Get(id, cancellationToken);
 
             return _mapper.Map<ProductViewModel>(productModel);
         }
 
         [HttpPost]
-        public async Task<ProductViewModel> Create(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> Create(ProductViewModel productViewModel, CancellationToken cancellationToken)
         {
             var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            productModel = await _productService.Create(productModel);
+            productModel = await _productService.Create(productModel, cancellationToken);
 
-            return _mapper.Map<ProductViewModel>(productModel);
+            _mapper.Map(productModel, productViewModel);
+
+            return productViewModel;
         }
 
         [HttpPut]
-        public async Task<ProductViewModel> Update(ProductViewModel productViewModel)
+        public async Task<ProductViewModel> Update(ProductViewModel productViewModel, CancellationToken cancellationToken)
         {
             var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            productModel = await _productService.Update(productModel);
+            productModel = await _productService.Update(productModel, cancellationToken);
 
             return _mapper.Map(productModel, productViewModel);
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public async Task Delete(int id, CancellationToken cancellationToken)
         {
-            await _productService.Delete(id);
+            await _productService.Delete(id, cancellationToken);
         }
     }
 }

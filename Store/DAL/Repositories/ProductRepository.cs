@@ -10,9 +10,9 @@ namespace DAL.Repositories
         : base(storeContext)
         { }
 
-        public async Task<Product> GetByName(string productName)
+        public async Task<Product> GetByName(string productName, CancellationToken cancellationToken)
         {
-            return await _storeContext.Products.SingleOrDefaultAsync(x => x.Name == productName);
+            return await _storeContext.Products.SingleOrDefaultAsync(x => x.Name == productName, cancellationToken);
         }
     }
 }

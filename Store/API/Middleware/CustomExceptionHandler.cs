@@ -35,6 +35,9 @@ namespace API.Models
                 case ArgumentException:
                     statusCode = (int)HttpStatusCode.BadRequest;
                     break;
+                case OperationCanceledException:
+                    statusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
                 default:
                     break;
             }

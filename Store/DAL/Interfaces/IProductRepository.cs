@@ -4,6 +4,6 @@ namespace DAL.Interfaces
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<Product> GetByName(string productName);
+        Task<Product> GetByName(string productName, CancellationToken cancellationToken);
     }
 }
