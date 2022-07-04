@@ -11,7 +11,7 @@ namespace API.Models
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
             try
             {
@@ -19,14 +19,13 @@ namespace API.Models
             }
             catch (Exception exception)
             {
-                await HandleExeptionAsync(context, exception);
+                await HandleException(context, exception);
             }
         }
 
-        private Task HandleExeptionAsync(HttpContext context, Exception exception)
+        private static Task HandleException(HttpContext context, Exception exception)
         {
-            int statusCode = (int)HttpStatusCode.InternalServerError;
-            string result;
+            var statusCode = (int)HttpStatusCode.InternalServerError;
 
             switch (exception)
             {
@@ -45,7 +44,7 @@ namespace API.Models
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
-            result = JsonSerializer.Serialize(new ExceptionModel { StatusCode = statusCode, Message = exception.Message });
+            var result = JsonSerializer.Serialize(new ExceptionModel { StatusCode = statusCode, Message = exception.Message });
 
             return context.Response.WriteAsync(result);
         }

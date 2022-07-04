@@ -14,18 +14,17 @@ namespace DAL.Repositories
             _dbSet = _storeContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> Get(CancellationToken cancellationToken)
         {
             return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
         }
 
-        public async Task<T> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<T> GetById(int id, CancellationToken cancellationToken)
         {
-
             return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken)
+        public async Task<T> Create(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Add(entity);
             await _storeContext.SaveChangesAsync(cancellationToken);
@@ -33,7 +32,7 @@ namespace DAL.Repositories
             return entity;
         }
 
-        public async Task<T> UpdateAsync(T entity, CancellationToken cancellationToken)
+        public async Task<T> Update(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Update(entity);
             await _storeContext.SaveChangesAsync(cancellationToken);
@@ -41,7 +40,7 @@ namespace DAL.Repositories
             return entity;
         }
 
-        public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
+        public async Task Delete(T entity, CancellationToken cancellationToken)
         {
             _dbSet.Remove(entity);
             await _storeContext.SaveChangesAsync(cancellationToken);

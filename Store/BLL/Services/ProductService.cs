@@ -22,18 +22,18 @@ namespace BLL.Services
             _validator = validator;
         }
 
-        public async Task<ProductModel> UpdateAsync(ProductModel productModel, CancellationToken cancellationToken)
+        public async Task<ProductModel> Update(ProductModel productModel, CancellationToken cancellationToken)
         {
             await _validator.ValidateAndThrowAsync(productModel, cancellationToken);
 
-            if (await _productRepository.GetByIdAsync(productModel.Id, cancellationToken) == null)
+            if (await _productRepository.GetById(productModel.Id, cancellationToken) == null)
             {
                 throw new ArgumentException("Product not found", nameof(productModel));
             }
 
-            await CheckCategoryExistAsync(productModel.CategoryId, cancellationToken);
+            await CheckCategoryExist(productModel.CategoryId, cancellationToken);
 
-            var productTemp = await _productRepository.GetByNameAsync(productModel.Name, cancellationToken);
+            var productTemp = await _productRepository.GetByName(productModel.Name, cancellationToken);
             if (productTemp != null && productTemp.Id != productModel.Id)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
@@ -41,72 +41,61 @@ namespace BLL.Services
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            var product = await _productRepository.GetByIdAsync(productModel.Id, cancellationToken);
+            var product = await _productRepository.GetById(productModel.Id, cancellationToken);
 
             _mapper.Map(productModel, product);
 
-            await _productRepository.UpdateAsync(product, cancellationToken);
+            await _productRepository.Update(product, cancellationToken);
 
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map(product, productModel);
         }
 
-        public async Task<ProductModel> CreateAsync(ProductModel productModel, CancellationToken cancellationToken)
+        public async Task<ProductModel> Create(ProductModel productModel, CancellationToken cancellationToken)
         {
             await _validator.ValidateAndThrowAsync(productModel, cancellationToken);
 
-            await CheckCategoryExistAsync(productModel.CategoryId, cancellationToken);
+            await CheckCategoryExist(productModel.CategoryId, cancellationToken);
 
-            if (await _productRepository.GetByNameAsync(productModel.Name, cancellationToken) != null)
+            if (await _productRepository.GetByName(productModel.Name, cancellationToken) != null)
             {
                 throw new ArgumentException("A product with the same name already exists", nameof(productModel));
             }
 
             productModel.IsOnSale = productModel.Price < 50;
 
-            Product product = new();
+            var product = _mapper.Map<Product>(productModel);
 
-            _mapper.Map(productModel, product);
+            await _productRepository.Create(product, cancellationToken);
 
-            await _productRepository.CreateAsync(product, cancellationToken);
-
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map(product, productModel);
         }
-
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        
+        public async Task Delete(int id, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(id, cancellationToken);
+            var product = await _productRepository.GetById(id, cancellationToken);
 
             CheckNullProduct(product);
 
-            await _productRepository.DeleteAsync(product, cancellationToken);
+            await _productRepository.Delete(product, cancellationToken);
         }
 
-        public async Task<IEnumerable<ProductModel>> GetAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductModel>> Get(CancellationToken cancellationToken)
         {
-            IEnumerable<Product> products = await _productRepository.GetAsync(cancellationToken);
-            IEnumerable<ProductModel> productModels = _mapper.Map<IEnumerable<ProductModel>>(products);
+            var products = await _productRepository.Get(cancellationToken);
 
-            return productModels;
+            return _mapper.Map<IEnumerable<ProductModel>>(products);
         }
 
-        public async Task<ProductModel> GetAsync(int id, CancellationToken cancellationToken)
+        public async Task<ProductModel> Get(int id, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(id, cancellationToken);
+            var product = await _productRepository.GetById(id, cancellationToken);
 
             CheckNullProduct(product);
 
-            ProductModel productModel = new();
-
-            _mapper.Map(product, productModel);
-
-            return productModel;
+            return _mapper.Map<ProductModel>(product);
         }
 
-        private void CheckNullProduct(Product product)
+        private static void CheckNullProduct(Product product)
         {
             if (product == null)
             {
@@ -114,9 +103,9 @@ namespace BLL.Services
             }
         }
 
-        private async Task CheckCategoryExistAsync(int categoryId, CancellationToken cancellationToken)
+        private async Task CheckCategoryExist(int categoryId, CancellationToken cancellationToken)
         {
-            if (await _categoryRepository.GetByIdAsync(categoryId, cancellationToken) == null)
+            if (await _categoryRepository.GetById(categoryId, cancellationToken) == null)
             {
                 throw new ArgumentException("Category not found");
             }

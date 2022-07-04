@@ -22,29 +22,27 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProductViewModel>> GetAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProductViewModel>> Get(CancellationToken cancellationToken)
         {
-            IEnumerable<ProductModel> models = await _productService.GetAsync(cancellationToken);
+            var models = await _productService.Get(cancellationToken);
 
             return _mapper.Map<IEnumerable<ProductViewModel>>(models);
         }
 
         [HttpGet("{id}")]
-        public async Task<ProductViewModel> GetAsync(int id, CancellationToken cancellationToken)
+        public async Task<ProductViewModel> Get(int id, CancellationToken cancellationToken)
         {
-            ProductModel productModel = await _productService.GetAsync(id, cancellationToken);
+            var productModel = await _productService.Get(id, cancellationToken);
 
             return _mapper.Map<ProductViewModel>(productModel);
         }
 
         [HttpPost]
-        public async Task<ProductViewModel> CreateAsync(ProductViewModel productViewModel, CancellationToken cancellationToken)
+        public async Task<ProductViewModel> Create(ProductViewModel productViewModel, CancellationToken cancellationToken)
         {
-            ProductModel productModel = new();
+            var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            _mapper.Map(productViewModel, productModel);
-
-            productModel = await _productService.CreateAsync(productModel, cancellationToken);
+            productModel = await _productService.Create(productModel, cancellationToken);
 
             _mapper.Map(productModel, productViewModel);
 
@@ -52,23 +50,19 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<ProductViewModel> UpdateAsync(ProductViewModel productViewModel, CancellationToken cancellationToken)
+        public async Task<ProductViewModel> Update(ProductViewModel productViewModel, CancellationToken cancellationToken)
         {
-            ProductModel productModel = new();
+            var productModel = _mapper.Map<ProductModel>(productViewModel);
 
-            _mapper.Map(productViewModel, productModel);
+            productModel = await _productService.Update(productModel, cancellationToken);
 
-            await _productService.UpdateAsync(productModel, cancellationToken);
-
-            _mapper.Map(productModel, productViewModel);
-
-            return productViewModel;
+            return _mapper.Map(productModel, productViewModel);
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task Delete(int id, CancellationToken cancellationToken)
         {
-            await _productService.DeleteAsync(id, cancellationToken);
+            await _productService.Delete(id, cancellationToken);
         }
     }
 }
