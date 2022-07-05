@@ -56,7 +56,9 @@ namespace API.Controllers
 
             productModel = await _productService.Update(productModel, cancellationToken);
 
-            return _mapper.Map(productModel, productViewModel);
+            _mapper.Map(productModel, productViewModel);
+
+            return productViewModel;
         }
 
         [HttpDelete("{id}")]
