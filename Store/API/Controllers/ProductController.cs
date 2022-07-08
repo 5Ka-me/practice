@@ -34,8 +34,6 @@ namespace API.Controllers
         {
             var productModel = await _productService.Get(id, cancellationToken);
 
-            return null;
-
             return _mapper.Map<ProductViewModel>(productModel);
         }
 
